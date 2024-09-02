@@ -1,0 +1,44 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+/* Basic grid layout */
+#game-container {
+    display: grid;
+    grid-template-columns: repeat(9, 40px); /* Adjust size as needed */
+    grid-template-rows: repeat(9, 40px); 
+    gap: 1px; /* Gap between cells */
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover; /* Ensure images cover the entire cell */
+    background-repeat: no-repeat; /* Prevent image repetition */
+    background-position: center; /* Center the image */
+}
+
+/* Styles for each type of cell */
+.empty { background-color: white; background-image: url('assets/images/empty.png'); }
+.tree { background-color: green; background-image: url('assets/images/tree.png'); }
+.wall { background-color: grey; background-image: url('assets/images/wall.png'); }
+.destination { background-color: yellow; background-image: url('assets/images/bomb.png'); box-shadow: 0 0 10px blue; }
+.box { background-color: orange; background-image: url('assets/images/box.png'); }
+.player { background-color: blue; background-image: url('assets/images/cat.png'); }
+
+/* Add glow effect when box or player is on top of a destination */
+.cell.box-on-destination {
+    box-shadow: 0 0 10px blue; /* Glowing effect */
+}
+
+.cell.player-on-destination {
+    box-shadow: 0 0 10px blue; /* Glowing effect */
+}
