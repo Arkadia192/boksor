@@ -13,6 +13,8 @@ let gridDynamic = [];
 let playerPosition = { row: 0, col: 0 };
 let levelSolution = null
 
+let moveMemory = []
+
 for (let row = 0; row < levels[currentLevelIndex].gridStatic.length; row++) {
     gridStatic.push([]);
     gridDynamic.push([]);
@@ -45,20 +47,13 @@ function loadLevel(level) {
         }
     }
     levelSolution = levels[currentLevelIndex].solutionMoves || null;
+    moveMemory = []
 
     document.getElementById('current-level').textContent = currentLevelIndex + 1;
     document.getElementById('level-solution').textContent = null;
     renderGrid();
     MOVABLE = true;
 }
-
-// let solutionMoves = findSolution();
-// if (solutionMoves) {
-//     console.log("Solution found:", solutionMoves);
-//     // playSolution(solutionMoves);
-// } else {
-//     console.log("No solution found.");
-// }
 
 function playSolution(moves) {
     MOVABLE = false;
@@ -91,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (MOVABLE) {
             let solutionMoves = levelSolution.slice();
             if (solutionMoves) {
-                console.log("Solution found:", solutionMoves);
+                // console.log("Solution found:", solutionMoves);
                 let formattedMoves = solutionMoves
                 .map((move, index) => (index + 1) % 10 === 0 ? move + '\n' : move)
                 .join(' ');
@@ -100,11 +95,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     playSolution(solutionMoves);
                 }, 500);
             } else {
-                console.log("No solution found.");
+                // console.log("No solution found.");
                 document.getElementById('level-solution').textContent = "No solution found.";
             }
         }
     });
+
+    document.getElementById('undo-move').addEventListener('click', () => {
+        if (MOVABLE)
+            undoMove();
+    });
+
+    document.getElementById('move-up').addEventListener('click', () => {
+        movePlayer('up');
+    });
+    
+    document.getElementById('move-down').addEventListener('click', () => {
+        movePlayer('down');
+    });
+    
+    document.getElementById('move-left').addEventListener('click', () => {
+        movePlayer('left');
+    });
+    
+    document.getElementById('move-right').addEventListener('click', () => {
+        movePlayer('right');
+    });    
 
     // Render the grid based on the 2D array
     renderGrid();
@@ -128,7 +144,25 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+function undoMove() {
+    if (moveMemory.length > 0) {
+        const previousState = moveMemory.pop();
+        playerPosition = previousState.playerPos;
+        gridDynamic = previousState.gridDynamic;
+        renderGrid();
+    }
+}
+
+function recordState() {
+    const state = {
+        playerPos: { ...playerPosition },
+        gridDynamic: JSON.parse(JSON.stringify(gridDynamic)) 
+    };
+    moveMemory.push(state);
+}
+
 function movePlayer(direction, automatic = false) {
+    if (MOVABLE == false && !automatic) return;
     if (!automatic && checkWinCondition()) {
         loadLevel(currentLevelIndex+1);
         return;
@@ -175,21 +209,15 @@ function movePlayer(direction, automatic = false) {
 
         if (nextCell === EMPTY && nextStaticCell !== WALL && nextStaticCell !== TREE) {
             // If the next cell is empty or a destination, push the box
+            recordState();
             gridDynamic[nextRow][nextCol] = BOX; // Move the box
             gridDynamic[newRow][newCol] = PLAYER; // Move the player
             gridDynamic[row][col] = EMPTY; // Clear the old player position
             playerPosition.row = newRow;
             playerPosition.col = newCol;
             renderGrid(); // Re-render the grid
+            // console.log(moveMemory);
         }
-    }
-
-    if (!automatic && checkWinCondition()) {
-        MOVABLE = false;
-        console.log("done.");
-        setTimeout( () => {
-            loadLevel(currentLevelIndex+1);
-        }, 2000);
     }
 }
 
@@ -254,7 +282,7 @@ function getStateHash(gridDynamic) {
 }
 
 function findSolution() {
-    console.log("calculating solution...");
+    // console.log("calculating solution...");
     let initialGrid = JSON.parse(JSON.stringify(gridDynamic)); // Clone the initial grid
     let queue = [{ grid: initialGrid, playerPosition, moves: [] }];
     let visited = new Set();
@@ -286,7 +314,7 @@ function findSolution() {
                 });
             }
         }
-        if (queue.length % 10 == 0) console.log(queue.length);
+        // if (queue.length % 10 == 0) console.log(queue.length);
     }
 
     return null; // No solution found
