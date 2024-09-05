@@ -1,6 +1,7 @@
 body {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     height: 100vh;
     margin: 0;
@@ -13,6 +14,8 @@ body {
     grid-template-columns: repeat(9, 40px); /* Adjust size as needed */
     grid-template-rows: repeat(9, 40px); 
     gap: 1px; /* Gap between cells */
+    border: 2px solid #333;
+    background-color: #4CAF50;
 }
 
 .cell {
@@ -27,12 +30,12 @@ body {
 }
 
 /* Styles for each type of cell */
-.empty { background-color: white; background-image: url('assets/images/empty.png'); }
-.tree { background-color: green; background-image: url('assets/images/tree.png'); }
-.wall { background-color: grey; background-image: url('assets/images/wall.png'); }
-.destination { background-color: yellow; background-image: url('assets/images/bomb.png'); box-shadow: 0 0 10px blue; }
-.box { background-color: orange; background-image: url('assets/images/box.png'); }
-.player { background-color: blue; background-image: url('assets/images/cat.png'); }
+.empty { background-color: #4CAF50; background-image: url('assets/images/empty.png'); }
+.tree { background-color: #4CAF50; background-image: url('assets/images/tree.png'); }
+.wall { background-color: #4CAF50; background-image: url('assets/images/wall.png'); }
+.destination { background-color: #4CAF50; background-image: url('assets/images/bomb.png'); box-shadow: 0 0 10px blue; }
+.box { background-color: #4CAF50; background-image: url('assets/images/box.png'); }
+.player { background-color: #4CAF50; background-image: url('assets/images/cat.jpg'); }
 
 /* Add glow effect when box or player is on top of a destination */
 .cell.box-on-destination {
@@ -41,4 +44,31 @@ body {
 
 .cell.player-on-destination {
     box-shadow: 0 0 10px blue; /* Glowing effect */
+}
+
+#level-controls {
+    display: flex; /* Align buttons horizontally */
+    justify-content: center;
+    margin-bottom: 20px; /* Space between buttons and game grid */
+}
+
+#level-controls button {
+    padding: 10px 20px;
+    margin: 0 10px; /* Space between buttons */
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#level-controls button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+#level-info {
+    font-size: 18px;
+    margin-bottom: 10px; /* Space between level display and buttons */
 }
